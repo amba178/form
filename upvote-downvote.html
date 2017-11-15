@@ -46,7 +46,7 @@
         }
         return (
             <div style = {style}>
-                <PostButton label = "x"/>
+                <PostButton label = "x" handleClick = {props.removeItem}/>
                 <PostText text = {props.title} width = "200"/>
                 <PostButton label = "+"  handleClick = {props.incrementScore}/>
                 <PostText className="text-center" text = {props.score} width = "20"/>
@@ -66,6 +66,7 @@
                   score = {item.score}
                   incrementScore = {() => props.updateScore(index, 1)}
                   decrementScore = { () => props.updateScore(index, -1)}
+                  removeItem = {() => props.removeItem(index)}
                 />
               )
             }
@@ -97,6 +98,16 @@
         this.setState({items: itemsCopy, value: ""})
       }
 
+      removeItem(index){
+        var itemsCopy = this.state.items.slice()
+        itemsCopy.splice(index, 1);
+        itemsCopy.sort((a, b) => {
+          return b.score - a.score
+        })
+
+        this.setState({items: itemsCopy})
+      }
+
       updateScore(index, val){
         var itemsCopy = this.state.items.slice()
         itemsCopy[index].score += val 
@@ -110,7 +121,10 @@
             <div className="col-lg-6">
               <input className="form-control" value = {this.state.value} onChange = {this.handleChange.bind(this)} />
               <button className="btn btn-primary" onClick = { () => this.addItem()}>Submit</button>
-              <PostList postList = { this.state.items} updateScore = {this.updateScore.bind(this)}/>
+              <PostList postList = { this.state.items} 
+                        updateScore = {this.updateScore.bind(this)}
+                        removeItem =  {this.removeItem.bind(this)}
+              />
             </div>
           )
       }
